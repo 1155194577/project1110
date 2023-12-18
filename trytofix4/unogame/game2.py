@@ -301,7 +301,10 @@ class UnoGame:
                 elif event.type == pygame.MOUSEBUTTONUP: ## elif some button is released 
                     if event.button == 1: 
                         dragging = False
-                        
+                if card_picked is not None:
+                  print("debug",card_picked)  
+                  bounding_box = card_picked.rect.inflate(6, 6)
+                  pygame.draw.rect(screen, BLUE, bounding_box, 3, border_radius=10)             
                         
                         
               if dragging:
@@ -313,6 +316,7 @@ class UnoGame:
                                if not card_picked.discarded:
                                 currentPlayer.hand.remove(card_picked)
                                 card_picked.discarded = True
+                                discard_top = card_picked
                                 
                                if self.IsActionCard(card_picked): 
                                   NextTurnPlayer , selectedcolor = self.UseActionCard(currentPlayer,card_picked,self.gui)
