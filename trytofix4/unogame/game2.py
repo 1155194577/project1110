@@ -207,6 +207,7 @@ class UnoGame:
             currentPlayer = head 
            
             ## initialize background msuic
+            card_drawn_sound = pygame.mixer.Sound("cardPlace1.wav")
             background_sound = pygame.mixer.Sound("along_the_way.ogg")
             background_sound.set_volume(0.5)
             background_sound.play()
@@ -284,6 +285,7 @@ class UnoGame:
                       if draw_pile_rect.collidepoint(event.pos): ## if mouse click draw_pile
                            # print("[Debug] The draw_pile is clicked!")
                             self.DrawCards(currentPlayer,1)
+                            card_drawn_sound.play()
                             currentPlayer = self.NextTurn(currentPlayer,self.Clockwise)
                             current_label = label_font.render(currentPlayer.name) ## change the label to nextPlayer
                             
