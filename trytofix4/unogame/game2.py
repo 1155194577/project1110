@@ -19,7 +19,7 @@ class UnoGame:
         self.skipturn = False ## a flag that signal turnskipping
         self.turn = 0 ## integer , record the no of turn elapsed
         self.currentcolor = None
-        
+        self.isdebugging = True
         
         ### GUI MODE ## 
         self.gui = True 
@@ -160,7 +160,7 @@ class UnoGame:
                 
             print(f"Turn {self.turn}: This is {currentPlayer.name}'s turn.\nDiscard Pile: {FrontCard} Current Color: {self.currentcolor.name}, DrawPile : {len(self.discardpile.cards)}, Clockwise = {self.Clockwise}")
             if currentPlayer.HasValidCard(FrontCard,self.currentcolor) or self.currentcolor in [card.color for card in currentPlayer.hand]:
-                currentPlayer.printHand(FrontCard,self.currentcolor)
+                currentPlayer.printHand(FrontCard,self.currentcolor,self.isdebugging)
                 selectedCard = currentPlayer.DiscardCard(FrontCard,self.currentcolor)
                 if selectedCard != 'D': 
                   if self.IsActionCard(selectedCard):
@@ -263,7 +263,7 @@ class UnoGame:
                       
               if self.currentcolor is not None and new_turn:   
                print(f"Turn {self.turn}: This is {currentPlayer.name}'s turn.\n Discard Pile: {FrontCard} Current Color: {self.currentcolor.name}, Drawpile : {len(self.discardpile.sprites())} , Clockwise : {self.Clockwise}")
-               currentPlayer.printHand(FrontCard,self.currentcolor)
+               currentPlayer.printHand(FrontCard,self.currentcolor,self.isdebugging)
                self.turn += 1
                new_turn = False 
               if True:

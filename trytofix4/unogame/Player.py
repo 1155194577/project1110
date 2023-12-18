@@ -24,13 +24,22 @@ class Player():
                 return True
         return False
     
-    def printHand(self,frontcard,currentColour):
+    def printHand(self,frontcard,currentColour,isdebugging):
         for index,card in enumerate(self.hand):
-            if self.IsvalidCard(card,frontcard,currentColour):
-                print([index],[card],end=" ")
-            else:
-                print(["X"],[card],end=" ") 
-            
+            if isinstance(self,Human):
+               if self.IsvalidCard(card,frontcard,currentColour):
+                   print([index],[card],end=" ")
+               elif not self.IsvalidCard(card,frontcard,currentColour):
+                   print(['X'],[card],end=" ")
+            elif  isinstance(self,Bot):
+                if isdebugging:  
+                     if self.IsvalidCard(card,frontcard,currentColour):
+                        print([index],[card],end=" ")
+                     elif not self.IsvalidCard(card,frontcard,currentColour):
+                        print(['X'],[card],end=" ") 
+                else:         
+                    print(['X'],['X'],end=' ')
+   
         print(["D"],["Draw"],end=" ")     
     
     def DiscardCard(self,frontcard,currentColour):
