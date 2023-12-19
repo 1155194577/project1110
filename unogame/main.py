@@ -227,12 +227,12 @@ class UnoGame:
             currentPlayer = head 
            
             ## initialize background msuic
-            hover_sound = pygame.mixer.Sound("choosingcard.wav")
-            failure_sound = pygame.mixer.Sound('lose2.wav')
-            change_colour_sound = pygame.mixer.Sound("power_up_04.ogg")
-            card_place_sound = pygame.mixer.Sound("cardSlide1.wav")
-            card_drawn_sound = pygame.mixer.Sound("cardPlace1.wav")
-            background_sound = pygame.mixer.Sound("along_the_way.ogg")
+            hover_sound = pygame.mixer.Sound(HOVERSOUND)
+            failure_sound = pygame.mixer.Sound(FAILURESOUND)
+            change_colour_sound = pygame.mixer.Sound(CHANGECOLOUR)
+            card_place_sound = pygame.mixer.Sound(CARDPLACEDSOUND)
+            card_drawn_sound = pygame.mixer.Sound(CARDDRAWNSOUND)
+            background_sound = pygame.mixer.Sound(BACKGROUND_MUSIC)
             card_place_sound.set_volume(1)
             background_sound.set_volume(0.3)
             background_sound.play()

@@ -4,11 +4,22 @@ import os
 FPS = 20
 BACKGROUND_SCALE = 0.21
 CARD_SCALE = 0.25
+
+###IMAGE ###
 BACKGROUND_IMAGE = os.path.join("images", "background1.jpg")
 DISCARD_AREA_IMAGE = os.path.join("images", "discard-area1.jpg")
 UNO_BACK_IMAGE = os.path.join("images", "UNO-Back.png")
 UNO_FRONT_IMAGE = os.path.join("images", "UNO-Front.png")
 UNO_ZEROS_IMAGE = os.path.join("images", "UNO-Zeros.png")
+
+## SOUND ## 
+BACKGROUND_MUSIC = os.path.join("Sound","bgm.ogg")
+CARDDRAWNSOUND = os.path.join("Sound",'carddrawnsound.wav')
+CARDPLACEDSOUND = os.path.join("Sound",'cardplacesound.wav')
+CHANGECOLOUR = os.path.join("Sound","changecolour.ogg")
+FAILURESOUND = os.path.join("Sound","failureSound.wav")
+HOVERSOUND = os.path.join("Sound","HoverSound.wav")
+
 ROBOTO_FONT = os.path.join("fonts", "RobotoCondensed.ttf")
 CARD_SIZE = (410, 585)  # pixels
 CARD_KEYS = (
