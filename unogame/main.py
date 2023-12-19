@@ -8,7 +8,7 @@ from pygame.transform import smoothscale_by
 from pygame.image import load
 from shadow_font import *
 from color_tools import ColorPicker
-
+import time
 
 class UnoGame:
     def __init__(self,drawpile,discardpile,maxNoOfplayer) -> None:
@@ -314,7 +314,8 @@ class UnoGame:
                         else:
                             card.hovered = False        
                         if card.hovered or card.rect.collidepoint(mousepos):
-                            print("mouse is hovering on ",card)
+                            pass 
+                       ##     print("mouse is hovering on ",card)
                           #  bounding_box = card.rect.inflate(6, 6)
                           #  pygame.draw.rect(screen, BLACK, bounding_box, 3, border_radius=10)
                       
@@ -329,6 +330,9 @@ class UnoGame:
                             color_picking = False
                             if ISDEBUGGING:
                                 print(f"[Debug] The color {color_picked.name} is selected!")   
+                                
+                            currentPlayer = self.NextTurn(currentPlayer,self.Clockwise)
+                            current_label = label_font.render(currentPlayer.name) ## change the label to nextPlayer
                             change_colour_sound.play()
                             new_turn = True 
                       if draw_pile_rect.collidepoint(event.pos): ## if mouse click draw_pile
@@ -365,15 +369,16 @@ class UnoGame:
                                if not card_picked.discarded:
                                 currentPlayer.hand.remove(card_picked)
                                 card_picked.discarded = True
-                                discard_top = card_picked
+                                FrontCard = card_picked
                                 
                                if self.IsActionCard(card_picked): 
                                   NextTurnPlayer , selectedcolor = self.UseActionCard(currentPlayer,card_picked,self.gui)
-                                  currentPlayer = NextTurnPlayer 
-                                  if selectedcolor == "PickInGui": 
+                                  if selectedcolor != "PickInGui":
+                                      currentPlayer = NextTurnPlayer 
+                                  elif selectedcolor == "PickInGui": 
                                       color_picking = True 
                                   dragging = False  
-                                  new_turn = True
+                                  ##new_turn = True
                                     
                                else: ## NumberCard 
                                      NextTurnPlayer = self.UseNumberCard(currentPlayer,card_picked)
@@ -386,10 +391,7 @@ class UnoGame:
                                self.discardpile.add(card_picked)
                                self.discardpile.update()
                                 
-                               discard_top = card_picked
-                               if discard_top:
-                                   bounding_box = discard_top.rect.inflate(6, 6)
-                                   pygame.draw.rect(screen, BLUE, bounding_box, 3, border_radius=10)    
+                               
                             else:
                                 print("Invalid Card!",card_picked)
                                 failure_sound.play()
@@ -397,15 +399,18 @@ class UnoGame:
                                 pygame.time.wait(int(failure_sound.get_length() )* 50) 
 
               if isinstance(currentPlayer,Bot):
+                  
                   print(f"NOw is {currentPlayer.name} turn")
+                  print("computer thinking")
                   if currentPlayer.HasValidCard(FrontCard,self.currentcolor) or self.currentcolor in [card.color for card in currentPlayer.hand]:
                       currentPlayer.printHand(FrontCard,self.currentcolor,ISDEBUGGING)
+                      
                       card_picked = currentPlayer.DiscardCard(FrontCard,self.currentcolor)
                       print(card_picked)
                       discard_top = card_picked 
                       card_picked.rect.x , card_picked.rect.y = random.randint(100,700),random.randint(100,300)
                       self.discardpile.add(card_picked)
-                      self.discardpile.update
+                      self.discardpile.update()
                       if self.IsActionCard(card_picked):
                           NextTurnPlayer,selectedcolor = self.UseActionCard(currentPlayer,card_picked,False)
                           if selectedcolor is not None:
@@ -429,17 +434,20 @@ class UnoGame:
                   screen.blit(card.image, card.rect)  
                   if card.hovered:
                       bounding_box = card.rect.inflate(6, 6)
-                      pygame.draw.rect(screen, BLACK, bounding_box, 3, border_radius=10) 
+                      pygame.draw.rect(screen, BLACK, bounding_box, 10, border_radius=10) 
+              if not ISDEBUGGING and isinstance(currentPlayer,Bot):
+                      pygame.draw.rect(screen, BLACK, ((0, 600, 2000, 300)))
+                 
+              self.discardpile.draw(screen) 
               for card in self.discardpile:
                   if card == FrontCard:
-                     bounding_box = card.rect.inflate(6, 6)
-                     pygame.draw.rect(screen, BLUE, bounding_box, 300, border_radius=100)            
-                      
-              self.discardpile.draw(screen)     
+                     bounding_box = card.rect.inflate(10, 10)
+                     pygame.draw.rect(screen, (255,255,0), bounding_box, 15, border_radius=10)   
+                     pygame.display.flip()     
+                     #pygame.draw.rect(screen, BLACK, bounding_box, 5, border_radius=10)          
               if color_picking: 
                      screen.blit(color_picker.surf,color_picker.rect)
-              pygame.display.update()
-              pygame.display.flip()     
+              pygame.display.update()    
               clock.tick(FPS)
             pygame.quit()    
             
