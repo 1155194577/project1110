@@ -227,6 +227,7 @@ class UnoGame:
             currentPlayer = head 
            
             ## initialize background msuic
+            hover_sound = pygame.mixer.Sound("choosingcard.wav")
             failure_sound = pygame.mixer.Sound('lose2.wav')
             change_colour_sound = pygame.mixer.Sound("power_up_04.ogg")
             card_place_sound = pygame.mixer.Sound("cardSlide1.wav")
@@ -272,7 +273,6 @@ class UnoGame:
             ########### Draw everything ##############
               if self.IsGameEnd():
                   break 
-              
               screen.blit(background_image,(0,0)) #Background image
               screen.blit(heading, ((screen_width - heading.get_width()) // 2, 15)) ## heading
               screen.blit(discard_area.image, discard_area.rect) ## discard area
@@ -301,7 +301,15 @@ class UnoGame:
                for event in pygame.event.get():
                 if event.type == pygame.QUIT: ## if quit then end loop
                   running = False 
-                  
+                elif event.type == pygame.MOUSEMOTION: 
+                    for card in currentPlayer.hand:
+                        if card.rect.collidepoint(event.pos):
+                            hover_sound.play()
+                            bounding_box = card.rect.inflate(6, 6)
+                            pygame.draw.rect(screen, BLACK, bounding_box, 3, border_radius=10)   
+                            card.rect.y -= 10 
+                   
+                      
                 elif event.type == pygame.MOUSEBUTTONDOWN: ## if some button on the mouse is clicked
                     
                    if event.button == 1:  ## if left mouse is clicked
