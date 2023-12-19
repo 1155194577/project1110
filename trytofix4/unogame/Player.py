@@ -80,9 +80,21 @@ class Player():
               
     def ChooseColour(self):
         if self.manually:
-          ChosenColor = int(input("Choose a color [1:R , 2:Y , 3:B , 4:G]: "))
+            while True: 
+              try:
+                 UserInput = input("Choose a color [1:R, 2:Y , 3:B , 4:G]:") 
+                 ChosenColor = int(UserInput)
+                 if ChosenColor in [1,2,3,4]:
+                     break 
+                 else:
+                     print("Invalidl Input! Out of range!")
+        ##    ChosenColor = int(input("Choose a color [1:R , 2:Y , 3:B , 4:G]: "))
+              except ValueError:
+                 print("InValid Input!")  
+    
         else: 
             ChosenColor = random.randint(1,4)  
+            
         for color in Color:
             if color.value == ChosenColor: 
                 print(color.name) 
