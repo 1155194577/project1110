@@ -20,7 +20,8 @@ class Card(Sprite):
         self.color = color
         self.value = value 
         self.discarded = False 
-    
+        self.hovered = False
+           
     def set_image(self,image):
         self.image = image
         self.rect = self.image.get_rect()    
@@ -136,4 +137,7 @@ def arrange(hand: list[Card]) -> None:
     # for more cards, use small gap between cards
     gap_width = 40 if len(hand) > 15 else (60 if len(hand) > 8 else 110)
     for i, card in enumerate(hand):
-        card.set_pos(100 + i*gap_width, 600)   
+        if not card.hovered:
+          card.set_pos(100 + i*gap_width, 600)   
+        else:
+          card.set_pos(100 + i*gap_width, 600-20)     

@@ -283,6 +283,8 @@ class UnoGame:
               arrange(currentPlayer.hand)  ## arrange player hand 
               screen.blit(current_label,(110,550)) ## show player name
               
+              if self.currentcolor is not None and ISDEBUGGING:
+                  screen.blit(label_font.render(self.currentcolor.name),(20,20))
             ###########console mode stuff #############
               FrontCard = self.discardpile.sprites()[-1]
               if FrontCard.color.value != 5: ## if the color is not WILD
@@ -302,22 +304,31 @@ class UnoGame:
                 if event.type == pygame.QUIT: ## if quit then end loop
                   running = False 
                 elif event.type == pygame.MOUSEMOTION: 
+                    mousepos = pygame.mouse.get_pos()
                     for card in currentPlayer.hand:
                         if card.rect.collidepoint(event.pos):
+                            card.hovered = True 
                             hover_sound.play()
-                            bounding_box = card.rect.inflate(6, 6)
-                            pygame.draw.rect(screen, BLACK, bounding_box, 3, border_radius=10)   
-                            card.rect.y -= 10 
-                   
+                            if ISDEBUGGING:
+                                print(f"[Debug] The card {card} is selected!")   
+                        else:
+                            card.hovered = False        
+                        if card.hovered or card.rect.collidepoint(mousepos):
+                            print("mouse is hovering on ",card)
+                          #  bounding_box = card.rect.inflate(6, 6)
+                          #  pygame.draw.rect(screen, BLACK, bounding_box, 3, border_radius=10)
                       
                 elif event.type == pygame.MOUSEBUTTONDOWN: ## if some button on the mouse is clicked
                     
                    if event.button == 1:  ## if left mouse is clicked
                       if color_picking:
                         color_picked = color_picker.select()
+                        if ISDEBUGGING:
+                                print(f"[Debug] Now selecing Color!")   
                         if color_picked: ## if mouse click color plate
                             color_picking = False
-                            print(color_picked)
+                            if ISDEBUGGING:
+                                print(f"[Debug] The color {color_picked.name} is selected!")   
                             change_colour_sound.play()
                             new_turn = True 
                       if draw_pile_rect.collidepoint(event.pos): ## if mouse click draw_pile
@@ -339,10 +350,10 @@ class UnoGame:
                 elif event.type == pygame.MOUSEBUTTONUP: ## elif some button is released 
                     if event.button == 1: 
                         dragging = False
-                if card_picked is not None:
-                  print("current card:",card_picked)  
-                  bounding_box = card_picked.rect.inflate(6, 6)
-                  pygame.draw.rect(screen, BLUE, bounding_box, 3, border_radius=10)             
+               # if card_picked is not None:
+                  #print("current card:",card_picked)  
+                  #bounding_box = card_picked.rect.inflate(6, 6)
+                  #pygame.draw.rect(screen, BLUE, bounding_box, 3, border_radius=10)             
                         
                         
               if dragging:
@@ -386,7 +397,15 @@ class UnoGame:
                                 pygame.time.wait(int(failure_sound.get_length() )* 50) 
 
               for card in currentPlayer.hand:
-                  screen.blit(card.image, card.rect)   
+                  screen.blit(card.image, card.rect)  
+                  if card.hovered:
+                      bounding_box = card.rect.inflate(6, 6)
+                      pygame.draw.rect(screen, BLACK, bounding_box, 3, border_radius=10) 
+              for card in self.discardpile:
+                  if card == FrontCard:
+                     bounding_box = card.rect.inflate(6, 6)
+                     pygame.draw.rect(screen, BLUE, bounding_box, 30, border_radius=10)            
+                      
               self.discardpile.draw(screen)     
               if color_picking: 
                      screen.blit(color_picker.surf,color_picker.rect)
