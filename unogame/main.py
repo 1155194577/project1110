@@ -283,7 +283,7 @@ class UnoGame:
               arrange(currentPlayer.hand)  ## arrange player hand 
               screen.blit(current_label,(110,550)) ## show player name
               
-              if self.currentcolor is not None and ISDEBUGGING:
+              if self.currentcolor is not None and not ISDEBUGGING:
                   screen.blit(label_font.render(self.currentcolor.name),(20,20))
             ###########console mode stuff #############
               FrontCard = self.discardpile.sprites()[-1]
@@ -396,6 +396,35 @@ class UnoGame:
                                 failure_sound.set_volume(1)
                                 pygame.time.wait(int(failure_sound.get_length() )* 50) 
 
+              if isinstance(currentPlayer,Bot):
+                  print(f"NOw is {currentPlayer.name} turn")
+                  if currentPlayer.HasValidCard(FrontCard,self.currentcolor) or self.currentcolor in [card.color for card in currentPlayer.hand]:
+                      currentPlayer.printHand(FrontCard,self.currentcolor,ISDEBUGGING)
+                      card_picked = currentPlayer.DiscardCard(FrontCard,self.currentcolor)
+                      print(card_picked)
+                      discard_top = card_picked 
+                      card_picked.rect.x , card_picked.rect.y = random.randint(100,700),random.randint(100,300)
+                      self.discardpile.add(card_picked)
+                      self.discardpile.update
+                      if self.IsActionCard(card_picked):
+                          NextTurnPlayer,selectedcolor = self.UseActionCard(currentPlayer,card_picked,False)
+                          if selectedcolor is not None:
+                            color_picked = selectedcolor
+                            self.currentcolor = color_picked
+                            print("The color now is dsadas",self.currentcolor)
+                          currentPlayer = NextTurnPlayer  
+                      else:
+                          currentPlayer = self.UseNumberCard(currentPlayer,card_picked)
+                                
+                      current_label = label_font.render(currentPlayer.name)
+                  else:
+                       if ISDEBUGGING:
+                         print(f"[Debug] The Player {currentPlayer.name} has no ValidCard!")
+                       self.DrawCards(currentPlayer,1)
+                       if not currentPlayer.HasValidCard(FrontCard,self.currentcolor): 
+                         NextTurnPlayer  = self.NextTurn(currentPlayer,self.Clockwise) 
+                         currentPlayer = NextTurnPlayer  
+                         current_label = label_font.render(currentPlayer.name)
               for card in currentPlayer.hand:
                   screen.blit(card.image, card.rect)  
                   if card.hovered:
@@ -404,7 +433,7 @@ class UnoGame:
               for card in self.discardpile:
                   if card == FrontCard:
                      bounding_box = card.rect.inflate(6, 6)
-                     pygame.draw.rect(screen, BLUE, bounding_box, 30, border_radius=10)            
+                     pygame.draw.rect(screen, BLUE, bounding_box, 300, border_radius=100)            
                       
               self.discardpile.draw(screen)     
               if color_picking: 
