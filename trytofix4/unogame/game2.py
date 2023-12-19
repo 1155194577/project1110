@@ -24,10 +24,9 @@ class UnoGame:
         self.screen = None
         self.background_image = None
         self.discard_area = None
-    def CreatePlayers(self,HumanName="Johnny",NoOfBot=3):
-        """This method create a list of player and convert it into LinkedLIst"""
-        def ListToLinkedList(players): 
-            """A helper function that Convert a List to Linked List"""
+    @staticmethod
+    def ListToLinkedList(players): 
+            """A helper/utility function that Convert a List to Linked List"""
             if len(players) == 0: 
                return None 
             head = players[0]
@@ -39,14 +38,17 @@ class UnoGame:
               current = current.next 
             current.next = head
             head.prev = current
-            return head     
-          
+            return head         
+        
+    def CreatePlayers(self,HumanName="Johnny",NoOfBot=3):
+        """This method create a list of player and convert it into LinkedLIst"""
+
         self.players.append(Human(HumanName,True))
         if ISDEBUGGING:
            print(f"Initializing {NoOfBot} Bots...")     
         for i in range(NoOfBot):
           self.players.append(Bot(f"Bot {i+1}",False)) 
-        head = ListToLinkedList(self.players)
+        head = self.ListToLinkedList(self.players)
         return head
      
     def IsGameEnd(self):
