@@ -49,29 +49,28 @@ class Player():
                try: 
                    choice = int(UserOption)
                except ValueError: 
-                   print("debug , the input value cannot be converted to integer")
+                   print("The input value cannot be converted to integer!")
                    if UserOption == 'D' or UserOption == 'd':
                        return 'D'
                    else:
                        print("Invalid input!")
                else: 
-                    if choice <= len(self.hand)-1: 
-                      print("debug : in range")  
+                    if choice <= len(self.hand)-1:  
                       selectedCard = self.hand[choice] 
                       if self.IsvalidCard(selectedCard,frontcard,currentColour):
-                         print(f"Discarded [{selectedCard}]")
+                         print(f"{self.name} Discarded [{selectedCard}]")
                          self.hand.remove(selectedCard)
                          return selectedCard   
                       else: 
                          print("Invalid Input!")
                     else:
-                        print("Invalid Input (Out of Range)!") 
+                        print("Invalid Input!") 
                       
         else: 
             print(self.name)
             for card in self.hand: 
                 if self.IsvalidCard(card,frontcard,currentColour): 
-                    print("[debug] Computer Chose",card)
+                    print(f"{self.name} Discard {card}")
                     self.hand.remove(card)
                     return card 
             if not self.HasValidCard(frontcard,currentColour):

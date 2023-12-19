@@ -6,7 +6,7 @@ from pygame.transform import smoothscale_by
 import pygame
 from pygame.image import load
 from cardreader import read_card_images
-from globals import *
+from globals import UNO_FRONT_IMAGE,UNO_ZEROS_IMAGE,CARD_KEYS
 class Deck(Group): 
     def __init__(self) -> None:
         super().__init__()

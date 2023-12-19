@@ -19,8 +19,6 @@ class UnoGame:
         self.skipturn = False ## a flag that signal turnskipping
         self.turn = 0 ## integer , record the no of turn elapsed
         self.currentcolor = None
-        self.isdebugging = True
-        
         ### GUI MODE ## 
         self.gui = True 
         self.screen = None
@@ -44,7 +42,8 @@ class UnoGame:
             return head     
           
         self.players.append(Human(HumanName,True))
-        print(f"Initializing {NoOfBot} Bots...")     
+        if ISDEBUGGING:
+           print(f"Initializing {NoOfBot} Bots...")     
         for i in range(NoOfBot):
           self.players.append(Bot(f"Bot {i+1}",False)) 
         head = ListToLinkedList(self.players)
@@ -74,8 +73,16 @@ class UnoGame:
         cards = self.drawpile.deal_cards(n)
         for card in cards:
             player.hand.append(card)
-        print(f"[Debug]: {player.name} drawn {cards}") 
         
+        if ISDEBUGGING:
+          print(f"[Debug]: {player.name} drawn {cards}") 
+        
+        elif not ISDEBUGGING: 
+           if isinstance(player,Human):
+              print(f" {player.name} drawn {cards}") 
+           elif isinstance(player,Bot):
+               print(f"{player.name} drawn {len(cards)} card(s)")   
+               
     def IsActionCard(self,card):
          action = card.value.value 
          if action not in range(0,10):
@@ -115,23 +122,27 @@ class UnoGame:
         NextTurnPlayer = card.play(currentplayer,self.Clockwise)              
         return NextTurnPlayer               
     def startConsole(self):
-        if False:
+        if not ISDEBUGGING:
           print("Running in Console Mode")
           user_name = input("What is your name?")
     
           while True: 
-            NoofBot = int(input("How many bot do you wanna play with?"))
-            if NoofBot in range(1,4): 
+            UserInput = input("How many Bot do you wanna play with?")
+            try: 
+               NoofBot = int(UserInput)
+            except ValueError:
+                print("Invalid input! Expected integer!")
+            else:    
+               if NoofBot in range(1,MAXNOOFPLAYER): 
                 break 
-            else: 
-                print("Invalid input! Valid No : 1,2,3") 
-        
+               else:
+                   print( f"Invalid input!allowed Number of Bot:{ ",".join([str(i) for i in range(1,MAXNOOFPLAYER)] )}" ) 
+
         self.drawpile.build_deck()
         self.drawpile.shuffle()
         head = self.CreatePlayers()
         for player in self.players:
-            self.DrawCards(player,HAND_SIZE) ## the 7 is hard-cored , to be amended
-            print(player.manually)
+            self.DrawCards(player,HAND_SIZE) 
         currentPlayer = head 
         currentcolor = None 
         selectedcolor = None 
@@ -139,10 +150,16 @@ class UnoGame:
         
         FrontCard = self.drawpile.deal_cards(1)[0]
         while FrontCard.color.value == 5:
-            print("drawn",FrontCard)
+            
+            if ISDEBUGGING:
+               print("[debug] drawn",FrontCard)
+               
             self.drawpile.cards.append(FrontCard)
             self.drawpile.shuffle()
-            print("shuffled")
+            
+            if ISDEBUGGING:
+               print("[debug] shuffled")
+               
             FrontCard = self.drawpile.deal_cards(1)[0]
         self.discardpile.cards.append(FrontCard)
         
@@ -160,7 +177,7 @@ class UnoGame:
                 
             print(f"Turn {self.turn}: This is {currentPlayer.name}'s turn.\nDiscard Pile: {FrontCard} Current Color: {self.currentcolor.name}, DrawPile : {len(self.discardpile.cards)}, Clockwise = {self.Clockwise}")
             if currentPlayer.HasValidCard(FrontCard,self.currentcolor) or self.currentcolor in [card.color for card in currentPlayer.hand]:
-                currentPlayer.printHand(FrontCard,self.currentcolor,self.isdebugging)
+                currentPlayer.printHand(FrontCard,self.currentcolor,ISDEBUGGING)
                 selectedCard = currentPlayer.DiscardCard(FrontCard,self.currentcolor)
                 if selectedCard != 'D': 
                   if self.IsActionCard(selectedCard):
@@ -177,7 +194,8 @@ class UnoGame:
                     self.DrawCards(currentPlayer,1) 
                     currentPlayer = self.NextTurn(currentPlayer,self.Clockwise)     
             else: 
-              print(f"The Player {currentPlayer.name} has no ValidCard!")
+              if ISDEBUGGING:
+                print(f"The Player {currentPlayer.name} has no ValidCard!")
               self.DrawCards(currentPlayer,1)
               if not currentPlayer.HasValidCard(FrontCard,self.currentcolor): 
                 NextTurnPlayer  = self.NextTurn(currentPlayer,self.Clockwise) 
@@ -372,7 +390,6 @@ if __name__ == "__main__":
   drawpile = DrawPile()
  ##drawpile.shuffle()
   discardpile = DiscardPile()
-  print(drawpile,discardpile)
   Game = UnoGame(drawpile,discardpile,3)
   if args.mode == "console":
    Game.startConsole()

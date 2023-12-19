@@ -1,6 +1,7 @@
 from enum import Enum
 from pygame.sprite import Sprite
 import pygame 
+from globals import ISDEBUGGING
 class Color(Enum):
     """An enumeration of UNO card colors."""
     RED = 1
@@ -61,7 +62,7 @@ class Reverse(ActionCard):
         NextTurnPlayer = self.Next(currentplayer,clockwise)
         return NextTurnPlayer
     def play(self,currentplayer,clockwise): 
-        print("[Debug] Direction is reversed!")
+        print("Direction is reversed!")
         NextTurnPlayer = self.Reverse(currentplayer,clockwise)
         return NextTurnPlayer
      
@@ -69,7 +70,7 @@ class Skip(ActionCard):
     def __init__(self, color, value) -> None:
         super().__init__(color, value)
     def skip(self,currentplayer,clockwise):
-        print("[Debug] The turn is Skip!!")
+        print("The turn is Skip!!")
         if clockwise:  ## if clockwise => next person/anti-clockwise=>prev person
             return currentplayer.next.next
         else: 
@@ -86,8 +87,9 @@ class Draw2(Skip):
     def drawNcard(self,player,n,drawpile):     
         cards = drawpile.deal_cards(n)
         for card in cards:
-            player.hand.append(card)
-        print(f"[Debug]: {player.name} drawn {cards}")    
+            player.hand.append(card)   
+        if ISDEBUGGING:    
+          print(f"[Debug]: {player.name} drawn {cards}")    
      
     def draw2(self,currentplayer,clockwise,drawpile):
         NextNextturnplayer = self.skip(currentplayer,clockwise) 
@@ -111,7 +113,6 @@ class WildCard(ActionCard):
         return NextTurnPlayer,selectedColor
             
     def play(self,player,clockwise,drawpile):
-        print("The function wildcard is execuated")
         NextTurnPlayer , selectedColor = self.ChangeColour(player,clockwise,drawpile) 
         return NextTurnPlayer, selectedColor
 
@@ -119,7 +120,6 @@ class WildDraw4(Draw2,WildCard):
     def __init__(self, color, value) -> None:
         super().__init__(color, value)
     def wildDraw4(self,currentplayer,clockwise,drawpile):
-        print("the function wilddraw 4 is execuated")
         NextTurnPlayer , selectedColour = self.ChangeColour(currentplayer,clockwise,drawpile)
         self.drawNcard(NextTurnPlayer,4,drawpile)
         Nextnextturnplayer = self.skip(currentplayer,clockwise)
