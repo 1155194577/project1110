@@ -45,15 +45,28 @@ class Player():
     def DiscardCard(self,frontcard,currentColour):
         if self.manually:
             while True:  
-              UserOption = input("Enter option: ")
-              if UserOption != 'D':
-                selectedCard = self.hand[int(UserOption)]
-                if self.IsvalidCard(selectedCard,frontcard,currentColour):
-                  print(f"Discarded [{selectedCard}]")
-                  self.hand.remove(selectedCard)
-                  return selectedCard   
-              elif UserOption == 'D': 
-                return 'D'  
+               UserOption = input("Enter option: ")
+               try: 
+                   choice = int(UserOption)
+               except ValueError: 
+                   print("debug , the input value cannot be converted to integer")
+                   if UserOption == 'D' or UserOption == 'd':
+                       return 'D'
+                   else:
+                       print("Invalid input!")
+               else: 
+                    if choice <= len(self.hand)-1: 
+                      print("debug : in range")  
+                      selectedCard = self.hand[choice] 
+                      if self.IsvalidCard(selectedCard,frontcard,currentColour):
+                         print(f"Discarded [{selectedCard}]")
+                         self.hand.remove(selectedCard)
+                         return selectedCard   
+                      else: 
+                         print("Invalid Input!")
+                    else:
+                        print("Invalid Input (Out of Range)!") 
+                      
         else: 
             print(self.name)
             for card in self.hand: 
