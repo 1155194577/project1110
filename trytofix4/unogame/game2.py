@@ -16,14 +16,15 @@ class UnoGame:
         self.drawpile = drawpile
         self.discardpile = discardpile
         self.Clockwise = True ## the direction of discarding card (default as Clockwise)
-        self.skipturn = False ## a flag that signal turnskipping
         self.turn = 0 ## integer , record the no of turn elapsed
         self.currentcolor = None
+        
         ### GUI MODE ## 
         self.gui = True 
         self.screen = None
         self.background_image = None
         self.discard_area = None
+        
     @staticmethod
     def ListToLinkedList(players): 
             """A helper/utility function that Convert a List to Linked List"""
@@ -42,7 +43,6 @@ class UnoGame:
         
     def CreatePlayers(self,HumanName="Johnny",NoOfBot=3):
         """This method create a list of player and convert it into LinkedLIst"""
-
         self.players.append(Human(HumanName,True))
         if ISDEBUGGING:
            print(f"Initializing {NoOfBot} Bots...")     
@@ -255,6 +255,11 @@ class UnoGame:
             
             ###### Get Front card from drawpile #####
             FrontCard = self.drawpile.deal_cards(1)[0]
+            while FrontCard.color.value ==5: 
+                self.drawpile.append(FrontCard)
+                self.drawpile.shuffle()
+                FrontCard = self.drawpile.deal_cards(1)[0]
+                
             FrontCard.rect.x , FrontCard.rect.y = 300,300
             self.discardpile.add(FrontCard)
             self.currentcolor = FrontCard.color 
