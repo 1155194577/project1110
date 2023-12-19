@@ -227,9 +227,13 @@ class UnoGame:
             currentPlayer = head 
            
             ## initialize background msuic
+            failure_sound = pygame.mixer.Sound('lose2.wav')
+            change_colour_sound = pygame.mixer.Sound("power_up_04.ogg")
+            card_place_sound = pygame.mixer.Sound("cardSlide1.wav")
             card_drawn_sound = pygame.mixer.Sound("cardPlace1.wav")
             background_sound = pygame.mixer.Sound("along_the_way.ogg")
-            background_sound.set_volume(0.5)
+            card_place_sound.set_volume(1)
+            background_sound.set_volume(0.3)
             background_sound.play()
             ## Game state ## 
             self.currentcolor = None
@@ -256,7 +260,7 @@ class UnoGame:
             ###### Get Front card from drawpile #####
             FrontCard = self.drawpile.deal_cards(1)[0]
             while FrontCard.color.value ==5: 
-                self.drawpile.append(FrontCard)
+                self.drawpile.add(FrontCard)
                 self.drawpile.shuffle()
                 FrontCard = self.drawpile.deal_cards(1)[0]
                 
@@ -288,7 +292,7 @@ class UnoGame:
                       
               if self.currentcolor is not None and new_turn:   
                print(f"Turn {self.turn}: This is {currentPlayer.name}'s turn.\n Discard Pile: {FrontCard} Current Color: {self.currentcolor.name}, Drawpile : {len(self.discardpile.sprites())} , Clockwise : {self.Clockwise}")
-               currentPlayer.printHand(FrontCard,self.currentcolor,self.isdebugging)
+               currentPlayer.printHand(FrontCard,self.currentcolor,ISDEBUGGING)
                self.turn += 1
                new_turn = False 
               if True:
@@ -306,6 +310,7 @@ class UnoGame:
                         if color_picked: ## if mouse click color plate
                             color_picking = False
                             print(color_picked)
+                            change_colour_sound.play()
                             new_turn = True 
                       if draw_pile_rect.collidepoint(event.pos): ## if mouse click draw_pile
                            # print("[Debug] The draw_pile is clicked!")
@@ -327,7 +332,7 @@ class UnoGame:
                     if event.button == 1: 
                         dragging = False
                 if card_picked is not None:
-                  print("debug",card_picked)  
+                  print("current card:",card_picked)  
                   bounding_box = card_picked.rect.inflate(6, 6)
                   pygame.draw.rect(screen, BLUE, bounding_box, 3, border_radius=10)             
                         
@@ -356,7 +361,7 @@ class UnoGame:
                                      currentPlayer = NextTurnPlayer
                                      dragging = False
                                      new_turn = True
-                                
+                                     card_place_sound.play()
                                arrange(currentPlayer.hand)
                                current_label = label_font.render(currentPlayer.name)
                                self.discardpile.add(card_picked)
@@ -368,7 +373,6 @@ class UnoGame:
                                    pygame.draw.rect(screen, BLUE, bounding_box, 3, border_radius=10)    
                             else:
                                 print("Invalid Card!",card_picked)
-                                failure_sound = pygame.mixer.Sound('lose2.wav')
                                 failure_sound.play()
                                 failure_sound.set_volume(1)
                                 pygame.time.wait(int(failure_sound.get_length() )* 50) 
@@ -390,7 +394,7 @@ class UnoGame:
 ### client_side ###  
 parser = argparse.ArgumentParser(description='UNO Card Game')
 parser.add_argument('-m', '--mode', choices=['console', 'gui','console_debug','gui_debug'],
-                    default='console', help='Select a mode (console, gui).')
+                    default='gui', help='Select a mode (console, gui).')
 args = parser.parse_args()
 
 if __name__ == "__main__":             
