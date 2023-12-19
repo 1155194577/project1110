@@ -108,7 +108,7 @@ class WildCard(ActionCard):
     
     def ChangeColour(self,player,clockwise,drawpile):   
         selectedColor = player.ChooseColour()
-        print(f"The colour is changed to {selectedColor}")
+        print(f"The colour is changed to {selectedColor.name}")
         NextTurnPlayer = self.Next(player,clockwise)
         return NextTurnPlayer,selectedColor
             

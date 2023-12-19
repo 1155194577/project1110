@@ -152,13 +152,13 @@ class UnoGame:
         while FrontCard.color.value == 5:
             
             if ISDEBUGGING:
-               print("[debug] drawn",FrontCard)
+               print("[Debug] drawn",FrontCard)
                
             self.drawpile.cards.append(FrontCard)
             self.drawpile.shuffle()
             
             if ISDEBUGGING:
-               print("[debug] shuffled")
+               print("[Debug] shuffled")
                
             FrontCard = self.drawpile.deal_cards(1)[0]
         self.discardpile.cards.append(FrontCard)
@@ -182,7 +182,7 @@ class UnoGame:
                 if selectedCard != 'D': 
                   if self.IsActionCard(selectedCard):
                      NextTurnPlayer , selectedcolor = self.UseActionCard(currentPlayer,selectedCard,False) 
-                     print(NextTurnPlayer,selectedcolor)
+                 ##print(NextTurnPlayer,selectedcolor)
                      currentPlayer = NextTurnPlayer
                      if selectedcolor is not None: 
                          currentcolor = selectedcolor
@@ -195,7 +195,7 @@ class UnoGame:
                     currentPlayer = self.NextTurn(currentPlayer,self.Clockwise)     
             else: 
               if ISDEBUGGING:
-                print(f"The Player {currentPlayer.name} has no ValidCard!")
+                print(f"[Debug] The Player {currentPlayer.name} has no ValidCard!")
               self.DrawCards(currentPlayer,1)
               if not currentPlayer.HasValidCard(FrontCard,self.currentcolor): 
                 NextTurnPlayer  = self.NextTurn(currentPlayer,self.Clockwise) 
@@ -360,7 +360,7 @@ class UnoGame:
                                    bounding_box = discard_top.rect.inflate(6, 6)
                                    pygame.draw.rect(screen, BLUE, bounding_box, 3, border_radius=10)    
                             else:
-                                print("[Debug] Invalid Card!",card_picked)
+                                print("Invalid Card!",card_picked)
                                 failure_sound = pygame.mixer.Sound('lose2.wav')
                                 failure_sound.play()
                                 failure_sound.set_volume(1)

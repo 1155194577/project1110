@@ -67,7 +67,6 @@ class Player():
                         print("Invalid Input!") 
                       
         else: 
-            print(self.name)
             for card in self.hand: 
                 if self.IsvalidCard(card,frontcard,currentColour): 
                     print(f"{self.name} Discard {card}")
@@ -96,7 +95,6 @@ class Player():
             
         for color in Color:
             if color.value == ChosenColor: 
-                print(color.name) 
                 return color
         
 class Bot(Player):
