@@ -97,7 +97,6 @@ class UnoGame:
         selectedColor = None 
         ## ActionName can be skip,draw2,draw4,reverse,card
         ## CardColorNumber = 5 is WILD
-        print(ActionName)
         if ActionName == "skip":
             NextTurnPlayer = card.play(currentplayer,self.Clockwise)     
         elif ActionName == "draw2":
@@ -123,7 +122,7 @@ class UnoGame:
         return NextTurnPlayer               
     def startConsole(self):
         if not ISDEBUGGING:
-          print("Running in Console Mode")
+          print("Running in Console Mode (non-debug mode)")
           user_name = input("What is your name?")
     
           while True: 
@@ -137,7 +136,8 @@ class UnoGame:
                 break 
                else:
                    print( f"Invalid input!allowed Number of Bot:{ ",".join([str(i) for i in range(1,MAXNOOFPLAYER)] )}" ) 
-
+        else:
+            print("Running in Console Mode (debug mode)")
         self.drawpile.build_deck()
         self.drawpile.shuffle()
         head = self.CreatePlayers()
@@ -382,7 +382,7 @@ class UnoGame:
                
 ### client_side ###  
 parser = argparse.ArgumentParser(description='UNO Card Game')
-parser.add_argument('-m', '--mode', choices=['console', 'gui'],
+parser.add_argument('-m', '--mode', choices=['console', 'gui','console_debug','gui_debug'],
                     default='console', help='Select a mode (console, gui).')
 args = parser.parse_args()
 
@@ -392,8 +392,16 @@ if __name__ == "__main__":
   discardpile = DiscardPile()
   Game = UnoGame(drawpile,discardpile,3)
   if args.mode == "console":
-   Game.startConsole()
+      ISDEBUGGING = False
+      Game.startConsole()
   elif args.mode == "gui":
+    ISDEBUGGING = False  
     Game.BetterGUI()
-
+  elif args.mode == "console_debug":
+   ISDEBUGGING = True    
+   Game.startConsole()
+  elif args.mode == "gui_debug": 
+     ISDEBUGGING = True       
+     Game.BetterGUI()
+     
 
