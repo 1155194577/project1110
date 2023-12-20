@@ -233,9 +233,9 @@ class UnoGame:
             card_place_sound = pygame.mixer.Sound(CARDPLACEDSOUND)
             card_drawn_sound = pygame.mixer.Sound(CARDDRAWNSOUND)
             background_sound = pygame.mixer.Sound(BACKGROUND_MUSIC)
+            endgame_music = pygame.mixer.Sound(ENDGAMEMUSIC)
             card_place_sound.set_volume(1)
             background_sound.set_volume(0.3)
-            background_sound.play()
             ## Game state ## 
             self.currentcolor = None
             dragging = False
@@ -250,14 +250,16 @@ class UnoGame:
             color_picking = False
             color_picker = ColorPicker(screen_width, screen_height)
             color_picked = None 
-            
+            gameEnd = False
             ## initialize Font ####
             heading_font = ShadowFont("Arial",size=50,shadow_offset=5,bold=True)
             label_font = ShadowFont(ROBOTO_FONT, sysfont=False, bold=True)
             heading = heading_font.render("UNO Card Game")
             player_label = label_font.render(currentPlayer.name)
             current_label = player_label
-            
+            gameEnd_label = heading_font.render("GAME END")
+            Clickme_label = heading_font.render("CLick Button To Quit!")
+            button_rect = pygame.Rect(500,500,100,100)
             ###### Get Front card from drawpile #####
             FrontCard = self.drawpile.deal_cards(1)[0]
             while FrontCard.color.value ==5: 
@@ -267,23 +269,29 @@ class UnoGame:
                 
             FrontCard.rect.x , FrontCard.rect.y = 300,300
             self.discardpile.add(FrontCard)
-            self.currentcolor = FrontCard.color 
+            self.currentcolor = FrontCard.color
+            background_sound.play() 
+            endgame_music.play()
+            endgame_music.set_volume(0)
            ### print(f"[debug], {FrontCard} drawn , color is {FrontCard.color}" )
             while running:
             ########### Draw everything ##############
               if self.IsGameEnd():
-                  break 
-              screen.blit(background_image,(0,0)) #Background image
-              screen.blit(heading, ((screen_width - heading.get_width()) // 2, 15)) ## heading
-              screen.blit(discard_area.image, discard_area.rect) ## discard area
-              self.discardpile.draw(screen) ## draw the discard_pile sprite group
-              if len(self.drawpile.cards) > 0: 
+                  gameEnd = True
+                  background_sound.set_volume(0)
+                  endgame_music.set_volume(5)
+              if not gameEnd:     
+                screen.blit(background_image,(0,0)) #Background image
+                screen.blit(heading, ((screen_width - heading.get_width()) // 2, 15)) ## heading
+                screen.blit(discard_area.image, discard_area.rect) ## discard area
+                self.discardpile.draw(screen) ## draw the discard_pile sprite group
+                if len(self.drawpile.cards) > 0: 
                  screen.blit(draw_pile_image,draw_pile_rect) ## drawpile
                  
-              arrange(currentPlayer.hand)  ## arrange player hand 
-              screen.blit(current_label,(110,550)) ## show player name
+                arrange(currentPlayer.hand)  ## arrange player hand 
+                screen.blit(current_label,(110,550)) ## show player name
               
-              if self.currentcolor is not None and not ISDEBUGGING:
+                if self.currentcolor is not None and not ISDEBUGGING:
                   screen.blit(label_font.render(self.currentcolor.name),(20,20))
             ###########console mode stuff #############
               FrontCard = self.discardpile.sprites()[-1]
@@ -302,7 +310,7 @@ class UnoGame:
             ###############event handling ###############
                for event in pygame.event.get():
                 if event.type == pygame.QUIT: ## if quit then end loop
-                  running = False 
+                  running = False   
                 elif event.type == pygame.MOUSEMOTION: 
                     mousepos = pygame.mouse.get_pos()
                     for card in currentPlayer.hand:
@@ -322,6 +330,10 @@ class UnoGame:
                 elif event.type == pygame.MOUSEBUTTONDOWN: ## if some button on the mouse is clicked
                     
                    if event.button == 1:  ## if left mouse is clicked
+                      if button_rect.collidepoint(pygame.mouse.get_pos()):
+                          print("button clicked!") 
+                          running = False
+                          
                       if color_picking:
                         color_picked = color_picker.select()
                         if ISDEBUGGING:
@@ -431,7 +443,8 @@ class UnoGame:
                          currentPlayer = NextTurnPlayer  
                          current_label = label_font.render(currentPlayer.name)
               for card in currentPlayer.hand:
-                  screen.blit(card.image, card.rect)  
+                  if not gameEnd:
+                    screen.blit(card.image, card.rect)  
                   if card.hovered:
                       bounding_box = card.rect.inflate(6, 6)
                       pygame.draw.rect(screen, BLACK, bounding_box, 10, border_radius=10) 
@@ -440,17 +453,28 @@ class UnoGame:
                  
               self.discardpile.draw(screen) 
               for card in self.discardpile:
-                  if card == FrontCard:
+                  if card == FrontCard and not gameEnd:
                      bounding_box = card.rect.inflate(10, 10)
                      pygame.draw.rect(screen, (255,255,0), bounding_box, 15, border_radius=10)   
                      pygame.display.flip()     
                      #pygame.draw.rect(screen, BLACK, bounding_box, 5, border_radius=10)          
-              if color_picking: 
+              if color_picking and not gameEnd: 
                      screen.blit(color_picker.surf,color_picker.rect)
+              if gameEnd: 
+                  screen.fill(BLACK)
+                  x = (screen_width-gameEnd_label.get_width())//2 
+                  y =(screen_height-gameEnd_label.get_height())//2 
+                  screen.blit(gameEnd_label,(x,y))
+                  screen.blit(Clickme_label,(x-100,y+200))
+                  button_rect.x = x+450
+                  button_rect.y = y + 200
+                  if button_rect.collidepoint(pygame.mouse.get_pos()):
+                    pygame.draw.rect(screen,BLUE,button_rect)
+                  else:
+                    pygame.draw.rect(screen,RED,button_rect)  
               pygame.display.update()    
               clock.tick(FPS)
             pygame.quit()    
-            
             
             
                      

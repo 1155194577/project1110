@@ -19,6 +19,7 @@ CARDPLACEDSOUND = os.path.join("Sound",'cardplacesound.wav')
 CHANGECOLOUR = os.path.join("Sound","changecolour.ogg")
 FAILURESOUND = os.path.join("Sound","failureSound.wav")
 HOVERSOUND = os.path.join("Sound","HoverSound.wav")
+ENDGAMEMUSIC = os.path.join("Sound","EndGameMusic.mp3")
 
 ROBOTO_FONT = os.path.join("fonts", "RobotoCondensed.ttf")
 CARD_SIZE = (410, 585)  # pixels
