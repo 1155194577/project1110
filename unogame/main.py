@@ -209,7 +209,7 @@ class UnoGame:
             clock = pygame.time.Clock()
            
             #Set up the screen 
-            screen = pygame.display.set_mode((screen_width,screen_height))  ## the screen
+            screen = pygame.display.set_mode((screen_width,screen_height),pygame.SRCALPHA)  ## the screen
             
             ##Load Background image 
             background_image = smoothscale_by(load(BACKGROUND_IMAGE).convert(),BACKGROUND_SCALE) ## bg image
@@ -259,6 +259,7 @@ class UnoGame:
             current_label = player_label
             gameEnd_label = heading_font.render("GAME END")
             Clickme_label = heading_font.render("CLick Button To Quit!")
+            EndGameHeading = heading_font.render("Merry Christmas!")
             button_rect = pygame.Rect(500,500,100,100)
             ###### Get Front card from drawpile #####
             FrontCard = self.drawpile.deal_cards(1)[0]
@@ -279,7 +280,7 @@ class UnoGame:
               if self.IsGameEnd():
                   gameEnd = True
                   background_sound.set_volume(0)
-                  endgame_music.set_volume(5)
+                  endgame_music.set_volume(1)
               if not gameEnd:     
                 screen.blit(background_image,(0,0)) #Background image
                 screen.blit(heading, ((screen_width - heading.get_width()) // 2, 15)) ## heading
@@ -461,13 +462,14 @@ class UnoGame:
               if color_picking and not gameEnd: 
                      screen.blit(color_picker.surf,color_picker.rect)
               if gameEnd: 
-                  screen.fill(BLACK)
+                  screen.fill((255,105,180,128))
                   x = (screen_width-gameEnd_label.get_width())//2 
                   y =(screen_height-gameEnd_label.get_height())//2 
                   screen.blit(gameEnd_label,(x,y))
                   screen.blit(Clickme_label,(x-100,y+200))
                   button_rect.x = x+450
                   button_rect.y = y + 200
+                  screen.blit(EndGameHeading, ((screen_width - EndGameHeading.get_width()) // 2, 15)) ## heading
                   if button_rect.collidepoint(pygame.mouse.get_pos()):
                     pygame.draw.rect(screen,BLUE,button_rect)
                   else:
