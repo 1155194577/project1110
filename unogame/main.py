@@ -381,6 +381,7 @@ class UnoGame:
                             if Isvalid: 
                                if not card_picked.discarded:
                                 currentPlayer.hand.remove(card_picked)
+                                self.discardpile.add(card_picked)
                                 card_picked.discarded = True
                                 FrontCard = card_picked
                                 
@@ -401,7 +402,6 @@ class UnoGame:
                                      card_place_sound.play()
                                arrange(currentPlayer.hand)
                                current_label = label_font.render(currentPlayer.name)
-                               self.discardpile.add(card_picked)
                                self.discardpile.update()
                                 
                                
@@ -421,7 +421,8 @@ class UnoGame:
                       card_picked = currentPlayer.DiscardCard(FrontCard,self.currentcolor)
                       print(card_picked)
                       discard_top = card_picked 
-                      card_picked.rect.x , card_picked.rect.y = random.randint(100,700),random.randint(100,300)
+                      if card_picked != 'D':
+                        card_picked.rect.x , card_picked.rect.y = random.randint(100,700),random.randint(100,300)
                       self.discardpile.add(card_picked)
                       self.discardpile.update()
                       if self.IsActionCard(card_picked):
@@ -461,7 +462,8 @@ class UnoGame:
                      #pygame.draw.rect(screen, BLACK, bounding_box, 5, border_radius=10)          
               if color_picking and not gameEnd: 
                      screen.blit(color_picker.surf,color_picker.rect)
-              if gameEnd: 
+              if gameEnd:
+                  endgame_music.set_volume(1)
                   screen.fill((255,105,180,128))
                   x = (screen_width-gameEnd_label.get_width())//2 
                   y =(screen_height-gameEnd_label.get_height())//2 
