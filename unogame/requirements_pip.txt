@@ -234,6 +234,7 @@ PyDispatcher==2.0.5
 pydocstyle==6.3.0
 pyerfa==2.0.0
 pyflakes==3.0.1
+pygame==2.5.2
 Pygments==2.15.1
 PyJWT==2.4.0
 pylint==2.16.2

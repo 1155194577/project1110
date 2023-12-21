@@ -342,6 +342,7 @@ pydispatcher=2.0.5=py311hca03da5_2
 pydocstyle=6.3.0=py311hca03da5_0
 pyerfa=2.0.0=py311h80987f9_0
 pyflakes=3.0.1=py311hca03da5_0
+pygame=2.5.2=pypi_0
 pygments=2.15.1=py311hca03da5_1
 pyjwt=2.4.0=py311hca03da5_0
 pylint=2.16.2=py311hca03da5_0

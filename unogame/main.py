@@ -1,7 +1,7 @@
+import pygame
 from Deck import *
 from Player import *
 from Cards import *
-import pygame
 import argparse
 from globals import *
 from pygame.transform import smoothscale_by
@@ -137,7 +137,8 @@ class UnoGame:
                if NoofBot in range(1,MAXNOOFPLAYER): 
                 break 
                else:
-                   print( f"Invalid input!allowed Number of Bot:{ ",".join([str(i) for i in range(1,MAXNOOFPLAYER)] )}" ) 
+                   allow_bot = ",".join([str(i) for i in range(1,MAXNOOFPLAYER)])
+                   print( f"Invalid input!allowed Number of Bot:{allow_bot}" ) 
         else:
             print("Running in Console Mode (debug mode)")
         self.drawpile.build_deck()
@@ -486,7 +487,7 @@ class UnoGame:
 ### client_side ###  
 parser = argparse.ArgumentParser(description='UNO Card Game')
 parser.add_argument('-m', '--mode', choices=['console', 'gui','console_debug','gui_debug'],
-                    default='gui', help='Select a mode (console, gui).')
+                    default='console', help='Select a mode (console, gui).')
 args = parser.parse_args()
 
 if __name__ == "__main__":             
