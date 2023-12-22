@@ -7,16 +7,19 @@ import pygame
 from pygame.image import load
 from cardreader import read_card_images
 from globals import UNO_FRONT_IMAGE,UNO_ZEROS_IMAGE,CARD_KEYS
-class Deck(Group): 
+class Deck(Group):
+    """This is a class that represent a Deck of Class""" 
     def __init__(self) -> None:
         super().__init__()
         self.cards = []
         
 class DrawPile(Deck):
+    """This class represent the drawpile"""
     def __init__(self) -> None:
         super().__init__()
     
     def build_deck(self,mode="console"):
+        """This method add all 108 card into the deck"""
         for c in itertools.islice(Color,0,4):
             for v in itertools.islice(Value,0,10): ## 0-9 : NumberCard , 10-12 : skip/Reverse/draw2 
                 num = 1 if v == Value.C0 else 2
@@ -44,6 +47,7 @@ class DrawPile(Deck):
                 return self.cards
                                          
     def AddWildCard(self):
+        """This method is a helper function that help adding wildCard"""
         c = Color.WILD
         v1 = Value.draw4
         v2 = Value.card
@@ -53,11 +57,13 @@ class DrawPile(Deck):
             self.cards.append(WildDraw4(c,v1))
             
     def deal_cards(self,n): 
+        "This method return a list of cards , which is at the front of DrawPile"
         cards = self.cards[:n]
         del self.cards[:n]
         return cards           
 
     def shuffle(self): 
+        """This method shuffle the deck"""
         random.shuffle(self.cards)
 
 class DiscardPile(Deck):

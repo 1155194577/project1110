@@ -52,6 +52,7 @@ class UnoGame:
         return head
      
     def IsGameEnd(self):
+        """This method determine whether the game is ended or not"""
         for player in self.players: ## iterate through hand of players ,
            if len(player.hand) == 0: ## if player discard all card 
               print(f"{player.name} win!") ## win 
@@ -72,6 +73,7 @@ class UnoGame:
             return currentplayer.prev   
                 
     def DrawCards(self,player,n):
+        """This method assign card to a particular player"""
         cards = self.drawpile.deal_cards(n)
         for card in cards:
             player.hand.append(card)
@@ -86,6 +88,7 @@ class UnoGame:
                print(f"{player.name} drawn {len(cards)} card(s)")   
                
     def IsActionCard(self,card):
+         """This method check whether a card is actioncard or not"""
          action = card.value.value 
          if action not in range(0,10):
            return True 
@@ -93,6 +96,7 @@ class UnoGame:
              return False 
     
     def UseActionCard(self,currentplayer,card,gui):
+        """This method is called when an ActionCard is played. It will return the Next turn player and selected Colour(if a wildcard is played) to the client side"""
         ActionName = card.value.name 
         CardColorNumber = card.color.value 
         NextTurnPlayer = None 
@@ -120,10 +124,12 @@ class UnoGame:
                  selectedColor = "PickInGui"
         return NextTurnPlayer , selectedColor             
     def UseNumberCard(self,currentplayer,card):
+        """This method is called when a NumberCard is played. IT will return the Next turn player """
         NextTurnPlayer = card.play(currentplayer,self.Clockwise)              
         return NextTurnPlayer               
     def startConsole(self):
-        if not ISDEBUGGING:
+        """This is the main loop of Console mode"""
+        if not ISDEBUGGING: ## prompt user input
           print("Running in Console Mode (non-debug mode)")
           user_name = input("What is your name?")
     
@@ -141,9 +147,11 @@ class UnoGame:
                    print( f"Invalid input!allowed Number of Bot:{allow_bot}" ) 
         else:
             print("Running in Console Mode (debug mode)")
-        self.drawpile.build_deck()
-        self.drawpile.shuffle()
-        head = self.CreatePlayers()
+        self.drawpile.build_deck() ## build the draw pile
+        self.drawpile.shuffle()  ## shuffle the pile
+        
+        ## initialize the players linked list
+        head = self.CreatePlayers()  
         for player in self.players:
             self.DrawCards(player,HAND_SIZE) 
         currentPlayer = head 
@@ -152,18 +160,18 @@ class UnoGame:
         
         
         FrontCard = self.drawpile.deal_cards(1)[0]
-        while FrontCard.color.value == 5:
+        while FrontCard.color.value == 5:  # We have to ensure that the first card is a coloured Card.
             
             if ISDEBUGGING:
                print("[Debug] drawn",FrontCard)
                
-            self.drawpile.cards.append(FrontCard)
-            self.drawpile.shuffle()
+            self.drawpile.cards.append(FrontCard)  ## if the firstdrawn Card is Wild , put it back to drawpile
+            self.drawpile.shuffle()   ## shuffle it 
             
             if ISDEBUGGING:
                print("[Debug] shuffled")
                
-            FrontCard = self.drawpile.deal_cards(1)[0]
+            FrontCard = self.drawpile.deal_cards(1)[0] ## draw another card
         self.discardpile.cards.append(FrontCard)
         
         self.currentcolor = FrontCard.color      ## Note that this line of code assume the first FrontCard is not WILD
@@ -203,7 +211,8 @@ class UnoGame:
               if not currentPlayer.HasValidCard(FrontCard,self.currentcolor): 
                 NextTurnPlayer  = self.NextTurn(currentPlayer,self.Clockwise) 
                 currentPlayer = NextTurnPlayer
-    def BetterGUI(self,screen_width=1080,screen_height=810): ## this function try to combine gui mode and console mode 
+    def BetterGUI(self,screen_width=1080,screen_height=810): 
+            """This method is the main loop of GUI mode"""
             print("Running in GUI mode.")
             # Initialize Pygame
             pygame.init()
@@ -367,11 +376,7 @@ class UnoGame:
                                 card_picked = card
                 elif event.type == pygame.MOUSEBUTTONUP: ## elif some button is released 
                     if event.button == 1: 
-                        dragging = False
-               # if card_picked is not None:
-                  #print("current card:",card_picked)  
-                  #bounding_box = card_picked.rect.inflate(6, 6)
-                  #pygame.draw.rect(screen, BLUE, bounding_box, 3, border_radius=10)             
+                        dragging = False         
                         
                         
               if dragging:
@@ -494,7 +499,7 @@ if __name__ == "__main__":
   drawpile = DrawPile()
  ##drawpile.shuffle()
   discardpile = DiscardPile()
-  Game = UnoGame(drawpile,discardpile,3)
+  Game = UnoGame(drawpile,discardpile,MAXNOOFPLAYER)
   if args.mode == "console":
       ISDEBUGGING = False
       Game.startConsole()

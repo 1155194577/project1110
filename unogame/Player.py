@@ -9,6 +9,7 @@ class Player():
         self.next = None 
         self.manually = manually
     def IsvalidCard(self,CardInHand,frontcard,currentColour):
+        """This method check whether a card is valid to discard"""
         if CardInHand.color.value == 5: ## It is always valid to discard WildCard 
           return True 
         if frontcard.color.value == 5 and  CardInHand.color == currentColour: ## If the last player discard WildCard , then it is valid to discard the selected colour    
@@ -19,12 +20,14 @@ class Player():
            return False
     
     def HasValidCard(self,frontcard,currentColour):
+        """This method call the IsvalidCard() method to check whether the player has valid card to discard"""
         for card in self.hand: 
             if self.IsvalidCard(card,frontcard,currentColour):
                 return True
         return False
     
     def printHand(self,frontcard,currentColour,isdebugging):
+        """This method print out the hand of players"""
         for index,card in enumerate(self.hand):
             if isinstance(self,Human):
                if self.IsvalidCard(card,frontcard,currentColour):
@@ -43,6 +46,7 @@ class Player():
         print(["D"],["Draw"],end=" ")     
     
     def DiscardCard(self,frontcard,currentColour):
+        """This method allow player to discard card. Whether discard automatically or not depends on the self.manually flag"""
         if self.manually:
             while True:  
                UserOption = input("Enter option: ")
@@ -77,6 +81,7 @@ class Player():
     
               
     def ChooseColour(self):
+        """This method allow player to choose card via user input or random choice  """
         if self.manually:
             while True: 
               try:
@@ -100,8 +105,8 @@ class Player():
 class Bot(Player):
     def __init__(self, name,manually) -> None:
         super().__init__(name,manually)
-
-
+     
+  
         
 class Human(Player):
   
