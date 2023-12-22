@@ -13,18 +13,16 @@ Make sure you have Python and Pygame installed on your system.
 
 To run the game in console: 
 
-    python main.py -m console 
-	python main.py -m gui 
+    python main.py -m console  (default mode)
     python main.py -m console_debug
-    python main.py -m gui_debug
-
-    by default , the game  operate in console mode. (python main.py) 
-
 
 
 To run the game in GUI mode:
 
-	python unogame.py -m gui
+	python main.py -m gui
+    python main.py -m gui_debug
+
+Make sure that you cd the file "unogame" before typing the command! 
 
 
 ## Acknowledgments
@@ -47,3 +45,14 @@ Images:
 
 Fonts:
 - [Roboto Condensed, designed by Christian Robertson, on Google Fonts] (https://fonts.google.com/specimen/Roboto+Condensed): RobotoCondensed.ttf
+
+Sounds:
+- [congusbongus on OpenGameArt.og](https://opengameart.org/content/along-the-way) : bgm.ogg (Under CC-BY 4.0 lincense)
+
+- [HaelDB on OpenGameArt.og](https://opengameart.org/content/card-game-sounds) : carddrawnsound.awv, cardplacesound.wav , HoverSoudn.wav (Under Public domain)
+
+- [SoundSpect] (https://opengameart.org/content/christmas-eve-celeste-version) : EndGameMusic.mp3 (Under CC-BY 3.0 lincense)
+
+- [Bart Kelsey](https://opengameart.org/content/spell-1) : changecolour.ogg (Under CC-BY-SA 3.0 lincense)
+
+- [remaxim] (https://opengameart.org/content/bad-sound-2) : failureSound.wwav (Under CC-BY-SA 3.0 lincense)
