@@ -52,6 +52,35 @@ class Player():
 
         print(["D"], ["Draw"], end=" ")
 
+   
+
+
+class Bot(Player):
+    def __init__(self, name, manually=False) -> None:
+        super().__init__(name, manually)
+        
+    def DiscardCard(self, frontcard, currentColour):
+        """This method allow player to discard card. Whether discard automatically or not depends on the self.manually flag"""
+        for card in self.hand:
+                if self.IsvalidCard(card, frontcard, currentColour):
+                    print(f"{self.name} Discard {card}")
+                    self.hand.remove(card)
+                    return card
+                if not self.HasValidCard(frontcard, currentColour):
+                  return 'D'
+    def ChooseColour(self):
+        """This method allow player to choose card via user input or random choice  """
+        ChosenColor = random.randint(1, 4)
+
+        for color in Color:
+            if color.value == ChosenColor:
+                return color
+    
+class Human(Player):
+
+    def __init__(self, name, manually=True) -> None:
+        super().__init__(name, manually)
+        
     def DiscardCard(self, frontcard, currentColour):
         """This method allow player to discard card. Whether discard automatically or not depends on the self.manually flag"""
         if self.manually:
@@ -77,16 +106,7 @@ class Player():
                             print("Invalid Input!")
                     else:
                         print("Invalid Input!")
-
-        else:
-            for card in self.hand:
-                if self.IsvalidCard(card, frontcard, currentColour):
-                    print(f"{self.name} Discard {card}")
-                    self.hand.remove(card)
-                    return card
-            if not self.HasValidCard(frontcard, currentColour):
-                return 'D'
-
+    
     def ChooseColour(self):
         """This method allow player to choose card via user input or random choice  """
         if self.manually:
@@ -100,23 +120,8 @@ class Player():
                         print("Invalidl Input! Out of range!")
         ##    ChosenColor = int(input("Choose a color [1:R , 2:Y , 3:B , 4:G]: "))
                 except ValueError:
-                    print("InValid Input!")
-
-        else:
-            ChosenColor = random.randint(1, 4)
-
-        for color in Color:
-            if color.value == ChosenColor:
-                return color
-
-
-class Bot(Player):
-    def __init__(self, name, manually=False) -> None:
-        super().__init__(name, manually)
-
-
-class Human(Player):
-
-    def __init__(self, name, manually=True) -> None:
-        super().__init__(name, manually)
-
+                    print("InValid Input!")     
+            for color in Color:
+              if color.value == ChosenColor:
+                  return color
+        

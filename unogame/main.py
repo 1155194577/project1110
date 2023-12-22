@@ -27,12 +27,8 @@ class UnoGame:
 
         ### GUI MODE ##
         self.gui = True
-        self.screen = None
-        self.background_image = None
-        self.discard_area = None
-
     @staticmethod
-    def ListToLinkedList(players):
+    def ListToLinkedList(players)->Player:
         """A helper/utility function that Convert a List to Linked List"""
         if len(players) == 0:
             return None
@@ -47,7 +43,7 @@ class UnoGame:
         head.prev = current
         return head
 
-    def CreatePlayers(self, HumanName=DEFAULTNAME, NoOfBot=NOOFBOTS):
+    def CreatePlayers(self, HumanName=DEFAULTNAME, NoOfBot=NOOFBOTS)->Player:
         """This method create a list of player and convert it into LinkedLIst"""
         self.players.append(Human(HumanName, True))
         if ISDEBUGGING:
@@ -57,7 +53,7 @@ class UnoGame:
         head = self.ListToLinkedList(self.players)
         return head
 
-    def IsGameEnd(self):
+    def IsGameEnd(self)->Player:
         """This method determine whether the game is ended or not"""
         for player in self.players:  # iterate through hand of players ,
             if len(player.hand) == 0:  # if player discard all card
@@ -69,7 +65,7 @@ class UnoGame:
         else:
             return False
 
-    def NextTurn(self, currentplayer, clockwise):
+    def NextTurn(self, currentplayer, clockwise)->Player:
         """This method is called when a turn is ended. Node are tranverse depending on
          clockwise and skipturn.
         """
@@ -77,8 +73,9 @@ class UnoGame:
             return currentplayer.next
         else:
             return currentplayer.prev
+            
 
-    def DrawCards(self, player, n):
+    def DrawCards(self, player, n)->None:
         """This method assign card to a particular player"""
         cards = self.drawpile.deal_cards(n)
         for card in cards:
@@ -93,57 +90,66 @@ class UnoGame:
             elif isinstance(player, Bot):
                 print(f"{player.name} drawn {len(cards)} card(s)")
 
-    def IsActionCard(self, card):
+    def IsActionCard(self, card)->bool:
         """This method check whether a card is actioncard or not"""
         action = card.value.value
-        if action not in range(0, 10):
-            return True
-        else:
-            return False
+        return action not in range(0, 10)
+         
 
-    def UseActionCard(self, currentplayer, card, gui):
-        """This method is called when an ActionCard is played. It will return the Next turn player and selected Colour(if a wildcard is played) to the client side"""
-        ActionName = card.value.name
-        CardColorNumber = card.color.value
-        NextTurnPlayer = None
-        selectedColor = None
-        # ActionName can be skip,draw2,draw4,reverse,card
-        ## CardColorNumber = 5 is WILD
-        if ActionName == "skip":
-            NextTurnPlayer = card.play(currentplayer, self.Clockwise)
-        elif ActionName == "draw2":
-            NextTurnPlayer = card.play(
-                currentplayer, self.Clockwise, self.drawpile)
-        elif ActionName == "reverse":
-            NextTurnPlayer = card.play(currentplayer, self.Clockwise)
+    def UseActionCard(self, current_player, card, gui)->[Player,Color]:
+      """This method is called when an ActionCard is played. It will return the next turn player and selected color (if a wildcard is played) to the client side"""
+
+      action_name = card.value.name
+      next_turn_player = None
+      selected_color = None
+
+      # ActionName can be skip, draw2, draw4, reverse, card
+      # CardColorNumber = WILD
+      # Match action_name with different cases
+      match action_name:
+        case "skip":
+            # Execute card.play() for skip action
+            next_turn_player = card.play(current_player, self.Clockwise)
+        case "draw2":
+            # Execute card.play() for draw2 action
+            next_turn_player = card.play(current_player, self.Clockwise, self.drawpile)
+        case "reverse":
+            # Execute card.play() for reverse action and update clockwise direction
+            next_turn_player = card.play(current_player, self.Clockwise)
             self.Clockwise = not self.Clockwise
-        if CardColorNumber == 5:  # when Colour is WILD
-            if ActionName == "draw4" and gui == False:
-                NextTurnPlayer, selectedColor = card.play(
-                    currentplayer, self.Clockwise, self.drawpile)
-            elif ActionName == 'draw4' and gui:
-                NextTurnPlayer = self.NextTurn(currentplayer, self.Clockwise)
-                NextTurnPlayer = self.NextTurn(NextTurnPlayer, self.Clockwise)
-                selectedColor = "PickInGui"
-            elif ActionName == "card" and gui == False:
-                NextTurnPlayer, selectedColor = card.play(
-                    currentplayer, self.Clockwise, self.drawpile)
-            elif ActionName == "card" and gui:
-                NextTurnPlayer = self.NextTurn(currentplayer, self.Clockwise)
-                selectedColor = "PickInGui"
-        return NextTurnPlayer, selectedColor
+        case "draw4":
+            match gui:
+                case False:
+                    # Execute card.play() for draw4 action without GUI
+                    next_turn_player, selected_color = card.play(current_player, self.Clockwise, self.drawpile)
+                case True:
+                    # Execute card.play() for draw4 action with GUI and select color in GUI
+                    next_turn_player = self.NextTurn(current_player, self.Clockwise)
+                    next_turn_player = self.NextTurn(next_turn_player, self.Clockwise)
+                    selected_color = "PickInGui"
+        case "card":
+            match gui:
+                case False:
+                    # Execute card.play() for card action without GUI
+                    next_turn_player, selected_color = card.play(current_player, self.Clockwise, self.drawpile)
+                case True:
+                    # Execute card.play() for card action with GUI and select color in GUI
+                    next_turn_player = self.NextTurn(current_player, self.Clockwise)
+                    selected_color = "PickInGui"
 
-    def UseNumberCard(self, currentplayer, card):
+      return next_turn_player, selected_color
+
+
+    def UseNumberCard(self, currentplayer, card)->Player:
         """This method is called when a NumberCard is played. IT will return the Next turn player """
-        NextTurnPlayer = card.play(currentplayer, self.Clockwise)
-        return NextTurnPlayer
+        return card.play(currentplayer, self.Clockwise)
 
-    def startConsole(self):
+    def startConsole(self)->None:
         """This is the main loop of Console mode"""
+        user_name = DEFAULTNAME
         if not ISDEBUGGING:  # prompt user input
             print("Running in Console Mode (non-debug mode)")
             user_name = input("What is your name?")
-
             while True:
                 UserInput = input("How many Bot do you wanna play with?")
                 try:
@@ -164,7 +170,7 @@ class UnoGame:
         self.drawpile.shuffle()  # shuffle the pile
 
         # initialize the players linked list
-        head = self.CreatePlayers()
+        head = self.CreatePlayers(HumanName=user_name)
         for player in self.players:
             self.DrawCards(player, HAND_SIZE)
         currentPlayer = head
@@ -237,7 +243,7 @@ class UnoGame:
                         currentPlayer, self.Clockwise)
                     currentPlayer = NextTurnPlayer
 
-    def BetterGUI(self, screen_width=1080, screen_height=810):
+    def BetterGUI(self, screen_width=1080, screen_height=810)->None:
         """This method is the main loop of GUI mode"""
         print("Running in GUI mode.")
         # Initialize Pygame
@@ -567,7 +573,6 @@ args = parser.parse_args()
 
 if __name__ == "__main__":
     drawpile = DrawPile()
-   # drawpile.shuffle()
     discardpile = DiscardPile()
     Game = UnoGame(drawpile, discardpile, MAXNOOFPLAYER)
     if args.mode == "console":
