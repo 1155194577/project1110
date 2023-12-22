@@ -24,6 +24,11 @@ To run the game in GUI mode:
 
 Make sure that you cd the file "unogame" before typing the command! 
 
+## Setting User name and Number of Bot to play with 
+
+In console mode , the User name and Number of Bot can be set via user prompt. 
+In console_debug mode , the User name and Number of Bot are default value ("johnny" and 3).The purpose is to save time that are spent on user input and focus more on debugging 
+In both gui and gui_debug mode , the User name and Number of Bot can be set via changing the global variable NOOFBOTS and DEFAULTNAME in the globals.py document.
 
 ## Acknowledgments
 

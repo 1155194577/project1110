@@ -111,14 +111,12 @@ class Player():
 
 
 class Bot(Player):
-    def __init__(self, name, manually) -> None:
+    def __init__(self, name, manually=False) -> None:
         super().__init__(name, manually)
 
 
 class Human(Player):
 
-    def __init__(self, name, manually) -> None:
+    def __init__(self, name, manually=True) -> None:
         super().__init__(name, manually)
 
-    def __str__(self) -> str:
-        return "Human"
