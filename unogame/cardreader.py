@@ -15,10 +15,10 @@ def clip(surface: pygame.Surface, x, y, w, h) -> pygame.Surface:
 
 def read_card_images(filename: str, n: int) -> list[pygame.Surface]:
     """Read n card images from the specified file.
-    
-    This is an ad hoc function that works only for a PNG image combining 
+
+    This is an ad hoc function that works only for a PNG image combining
     card images in a 7x10 grid. It splits the image into n card images.
-    """    
+    """
     images = []
     W, H = CARD_SIZE
     uno_big_image = load(filename).convert_alpha()
@@ -34,4 +34,3 @@ def read_card_images(filename: str, n: int) -> list[pygame.Surface]:
             if len(images) >= n:
                 return images
     return images
-

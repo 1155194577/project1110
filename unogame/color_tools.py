@@ -6,7 +6,7 @@ from globals import RED, YELLOW, BLUE, GREEN, GRAY, BLACK
 
 class ColorPicker:
     """A class for creating a color picker interface."""
-    
+
     colors = [RED, YELLOW, BLUE, GREEN]
     options = [Color.RED, Color.YELLOW, Color.BLUE, Color.GREEN]
 
@@ -26,7 +26,7 @@ class ColorPicker:
         popup_left = (screen_width - w) // 2
         popup_top = (screen_height - h) // 2
         self.rect = self.surf.get_rect(topleft=(popup_left, popup_top))
-        
+
         # draw text label and option boxes
         font = ShadowFont("Arial", size=25, bold=True)
         text = font.render('Pick a color:')
@@ -35,7 +35,8 @@ class ColorPicker:
         for i, color in enumerate(ColorPicker.colors):
             x = left + (square_size + margin) * i
             y = top
-            rect = pygame.draw.rect(self.surf, color, (x, y, square_size, square_size))
+            rect = pygame.draw.rect(
+                self.surf, color, (x, y, square_size, square_size))
             rect.x += popup_left
             rect.y += popup_top
             self.option_rects.append(rect)
@@ -45,5 +46,3 @@ class ColorPicker:
             if option_rect.collidepoint(pygame.mouse.get_pos()):
                 return option
         return None
-
-
