@@ -11,7 +11,7 @@ from color_tools import ColorPicker
 import time
 
 class UnoGame:
-    def __init__(self,drawpile,discardpile,maxNoOfplayer) -> None:
+    def __init__(self,drawpile,discardpile,maxNoOfplayer=MAXNOOFPLAYER) -> None:
         self.players = []  ## a list that contain all players
         self.drawpile = drawpile
         self.discardpile = discardpile
@@ -41,7 +41,7 @@ class UnoGame:
             head.prev = current
             return head         
         
-    def CreatePlayers(self,HumanName="Johnny",NoOfBot=3):
+    def CreatePlayers(self,HumanName=DEFAULTNAME,NoOfBot=NOOFBOTS):
         """This method create a list of player and convert it into LinkedLIst"""
         self.players.append(Human(HumanName,True))
         if ISDEBUGGING:
@@ -233,7 +233,7 @@ class UnoGame:
             ## initialize players 
             head = self.CreatePlayers()
             for player in self.players:
-               self.DrawCards(player,7) ## the 7 is hard-cored , to be amended
+               self.DrawCards(player,HAND_SIZE) 
             currentPlayer = head 
            
             ## initialize background msuic
@@ -302,7 +302,7 @@ class UnoGame:
                 arrange(currentPlayer.hand)  ## arrange player hand 
                 screen.blit(current_label,(110,550)) ## show player name
               
-                if self.currentcolor is not None and not ISDEBUGGING:
+                if self.currentcolor is not None:
                   screen.blit(label_font.render(self.currentcolor.name),(20,20))
             ###########console mode stuff #############
               FrontCard = self.discardpile.sprites()[-1]
@@ -310,8 +310,8 @@ class UnoGame:
                   self.currentcolor = FrontCard.color 
               else:
                   self.currentcolor = color_picked
-                      
-              if self.currentcolor is not None and new_turn:   
+              print(self.currentcolor,new_turn,ISDEBUGGING)    
+              if self.currentcolor is not None and new_turn and ISDEBUGGING:   
                print(f"Turn {self.turn}: This is {currentPlayer.name}'s turn.\n Discard Pile: {FrontCard} Current Color: {self.currentcolor.name}, Drawpile : {len(self.discardpile.sprites())} , Clockwise : {self.Clockwise}")
                currentPlayer.printHand(FrontCard,self.currentcolor,ISDEBUGGING)
                self.turn += 1
@@ -329,7 +329,7 @@ class UnoGame:
                             card.hovered = True 
                             hover_sound.play()
                             if ISDEBUGGING:
-                                print(f"[Debug] The card {card} is selected!")   
+                                print(f"[Debug] The card {card} is hovered!")   
                         else:
                             card.hovered = False        
                         if card.hovered or card.rect.collidepoint(mousepos):
@@ -369,7 +369,7 @@ class UnoGame:
                             if card.rect.collidepoint(event.pos): ## if mouse click any of the card 
                                 #print(f"The card {card} is picked!")
                                 Isvalid = currentPlayer.IsvalidCard(card,FrontCard,self.currentcolor)
-                                print(Isvalid)
+                              #  print(Isvalid)
                                 dragging = True
                                 offset_x = event.pos[0] - card.rect.x
                                 offset_y = event.pos[1] - card.rect.y
@@ -398,6 +398,7 @@ class UnoGame:
                                   elif selectedcolor == "PickInGui": 
                                       color_picking = True 
                                   dragging = False  
+                                  new_turn = True
                                   ##new_turn = True
                                     
                                else: ## NumberCard 
@@ -412,7 +413,8 @@ class UnoGame:
                                 
                                
                             else:
-                                print("Invalid Card!",card_picked)
+                                if ISDEBUGGING:
+                                  print("Invalid Card!",card_picked)
                                 failure_sound.play()
                                 failure_sound.set_volume(1)
                                 pygame.time.wait(int(failure_sound.get_length() )* 50) 
@@ -436,7 +438,7 @@ class UnoGame:
                           if selectedcolor is not None:
                             color_picked = selectedcolor
                             self.currentcolor = color_picked
-                            print("The color now is dsadas",self.currentcolor)
+                            ###print("The color now is dsadas",self.currentcolor)
                           currentPlayer = NextTurnPlayer  
                       else:
                           currentPlayer = self.UseNumberCard(currentPlayer,card_picked)
